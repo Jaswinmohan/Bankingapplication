@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::main}, 'New Account')}">
+
+<body>
+    <main>
+        <h2>Open New Account for <span th:text="${customer.firstName + ' ' + customer.lastName}"></span></h2>
+        <hr />
+        <form th:action="@{/accounts/save/{customerId}(customerId=${customer.id})}" method="post" class="w-50">
+            <div class="mb-3">
+                <label for="accountType" class="form-label">Account Type</label>
+                <select name="accountType" id="accountType" class="form-select" required>
+                    <option value="">Select a Type</option>
+                    <option th:each="type : ${accountTypes}" th:value="${type}" th:text="${type}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="initialDeposit" class="form-label">Initial Deposit</label>
+                <input type="number" step="0.01" name="initialDeposit" class="form-control" id="initialDeposit" required
+                    min="0">
+            </div>
+            <button type="submit" class="btn btn-success">Create Account</button>
+            <a th:href="@{/customers/details/{id}(id=${customer.id})}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </main>
+</body>
+
+</html>

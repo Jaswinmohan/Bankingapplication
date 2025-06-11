@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<!-- This 'layout' fragment is the target for all other pages -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content, pageTitle)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} ?: 'Banking Management System'"></title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        /* Ensure footer stays at bottom */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #e5e7eb, #f3f4f6);
+            background-image: url('data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%239CA3AF" fill-opacity="0.1" fill-rule="evenodd"%3E%3Cpath d="M0 40L40 0H20L0 20zM40 40H20L40 20z"/%3E%3C/g%3E%3C/svg%3E');
+        }
+
+        main {
+            flex: 1 0 auto;
+            padding-bottom: 2rem;
+        }
+
+        .footer {
+            flex-shrink: 0;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: background 0.5s ease, transform 0.3s ease;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar.scrolled {
+            background: linear-gradient(90deg, #111827, #1f2937);
+        }
+
+        .navbar-brand {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff !important;
+            display: flex;
+            align-items: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: transform 0.4s ease, color 0.4s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.1);
+            color: #facc15 !important;
+        }
+
+        .navbar-brand .bi-bank2 {
+            margin-right: 15px;
+            font-size: 2.8rem;
+            transition: transform 0.5s ease;
+        }
+
+        .navbar-brand:hover .bi-bank2 {
+            transform: rotate(360deg);
+        }
+
+        .nav-link {
+            color: #ffffff !important;
+            font-weight: 600;
+            padding: 12px 20px !important;
+            position: relative;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #facc15 !important;
+            transform: translateY(-2px);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 4px;
+            bottom: 0;
+            left: 50%;
+            background: linear-gradient(90deg, #facc15, #f97316);
+            transition: width 0.4s ease, left 0.4s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
+        }
+
+        .dropdown-menu {
+            background: #1e3a8a;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        .dropdown-item {
+            color: #ffffff !important;
+            padding: 12px 24px;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: #3b82f6;
+            transform: translateX(8px);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .navbar-toggler {
+            border: none;
+            transition: transform 0.4s ease;
+        }
+
+        .navbar-toggler:hover {
+            transform: rotate(180deg);
+        }
+
+        /* Search Bar Animation */
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon {
+            color: #ffffff;
+            font-size: 1.6rem;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .search-icon:hover {
+            color: #facc15;
+            transform: scale(1.2);
+        }
+
+        .search-bar {
+            width: 0;
+            opacity: 0;
+            border: none;
+            border-radius: 25px;
+            padding: 0;
+            margin-left: 12px;
+            background: #ffffff;
+            color: #1e3a8a;
+            transition: all 0.4s ease;
+        }
+
+        .search-bar.active {
+            width: 250px;
+            opacity: 1;
+            padding: 10px 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Title Animation */
+        @keyframes gradientText {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animated-title {
+            background: linear-gradient(45deg, #1e3a8a, #facc15, #3b82f6);
+            background-size: 300% 300%;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientText 5s ease infinite;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Footer Styling */
+        .footer {
+            background: linear-gradient(90deg, #111827, #1e3a8a);
+            color: #ffffff;
+            padding: 60px 0 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://source.unsplash.com/random/1920x300?finance') no-repeat center/cover;
+            opacity: 0.05;
+            z-index: 0;
+            transform: translateY(10px);
+            transition: transform 0.5s ease;
+        }
+
+        .footer:hover::before {
+            transform: translateY(0);
+        }
+
+        .footer-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer h5 {
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            color: #facc15;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+        }
+
+        .footer a {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #facc15;
+            transform: translateX(5px);
+        }
+
+        .social-icons a {
+            font-size: 2rem;
+            margin: 0 20px;
+            transition: transform 0.4s ease, color 0.4s ease;
+        }
+
+        .social-icons a:hover {
+            color: #facc15;
+            transform: scale(1.4) rotate(15deg);
+        }
+
+        .newsletter-form input {
+            border: none;
+            border-radius: 25px 0 0 25px;
+            padding: 12px 20px;
+            width: 200px;
+            outline: none;
+        }
+
+        .newsletter-form button {
+            background: #facc15;
+            color: #1e3a8a;
+            border: none;
+            border-radius: 0 25px 25px 0;
+            padding: 12px 20px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .newsletter-form button:hover {
+            background: #f97316;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .navbar-nav {
+                text-align: center;
+                background: #1e3a8a;
+                padding: 20px;
+                border-radius: 0 0 12px 12px;
+            }
+
+            .nav-link {
+                padding: 10px !important;
+            }
+
+            .search-bar.active {
+                width: 100%;
+            }
+
+            .footer-content>div {
+                margin-bottom: 30px;
+            }
+
+            .newsletter-form input {
+                width: 100%;
+                border-radius: 25px;
+                margin-bottom: 10px;
+            }
+
+            .newsletter-form button {
+                border-radius: 25px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}">
+                <i class="bi bi-bank2"></i> BankingPro
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="branchesDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-diagram-3"></i> Branches
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="branchesDropdown">
+                            <li><a class="dropdown-item" th:href="@{/branches/list}">List Branches</a></li>
+                            <li><a class="dropdown-item" th:href="@{/branches/add}">Add Branch</a></li>
+                            <li><a class="dropdown-item" th:href="@{/branches/search}">Search Branches</a></li>
+                            <li><a class="dropdown-item" th:href="@{/branches/reports}">Branch Reports</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="employeesDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-people"></i> Employees
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="employeesDropdown">
+                            <li><a class="dropdown-item" th:href="@{/employees/list}">List Employees</a></li>
+                            <li><a class="dropdown-item" th:href="@{/employees/add}">Add Employee</a></li>
+                            <li><a class="dropdown-item" th:href="@{/employees/search}">Search Employees</a></li>
+                            <li><a class="dropdown-item" th:href="@{/employees/roles}">Manage Roles</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="customersDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-rolodex"></i> Customers
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="customersDropdown">
+                            <li><a class="dropdown-item" th:href="@{/customers/list}">List Customers</a></li>
+                            <li><a class="dropdown-item" th:href="@{/customers/add}">Add Customer</a></li>
+                            <li><a class="dropdown-item" th:href="@{/customers/search}">Search Customers</a></li>
+                            <li><a class="dropdown-item" th:href="@{/customers/accounts}">Manage Accounts</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i> Profile
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                            <li><a class="dropdown-item" th:href="@{/profile}">View Profile</a></li>
+                            <li><a class="dropdown-item" th:href="@{/profile/settings}">Settings</a></li>
+                            <li><a class="dropdown-item" th:href="@{/logout}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <div class="search-container">
+                    <i class="bi bi-search search-icon" onclick="toggleSearchBar()"></i>
+                    <input type="text" class="search-bar" placeholder="Search branches, employees, or customers..." />
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="container mt-5">
+        <h1 class="animated-title text-4xl md:text-5xl" th:text="${pageTitle} ?: 'Banking Management System'"></h1>
+        <!-- The 'content' fragment from the calling page is inserted here -->
+        <div th:replace="${content}"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content container grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-left">
+            <div>
+                <h5>Our Mission</h5>
+                <p class="text-sm text-gray-300">Empowering financial success with innovative banking solutions and
+                    unparalleled customer service.</p>
+            </div>
+            <div>
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled space-y-2">
+                    <li><a th:href="@{/about}">About Us</a></li>
+                    <li><a th:href="@{/services}">Our Services</a></li>
+                    <li><a th:href="@{/contact}">Contact Us</a></li>
+                    <li><a th:href="@{/faq}">FAQ</a></li>
+                    <li><a th:href="@{/privacy}">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5>Contact Info</h5>
+                <ul class="list-unstyled space-y-2">
+                    <li>Email: <a href="mailto:support@bankingpro.com">support@bankingpro.com</a></li>
+                    <li>Phone: +1 (800) 123-4567</li>
+                    <li>Address: 123 Finance St, Money City, USA 12345</li>
+                    <li>Hours: Mon-Fri, 9 AM - 5 PM</li>
+                </ul>
+            </div>
+            <div>
+                <h5>Stay Connected</h5>
+                <div class="newsletter-form flex justify-center md:justify-start">
+                    <input type="email" placeholder="Enter your email" class="text-gray-800" />
+                    <button>Subscribe</button>
+                </div>
+                <div class="social-icons mt-4 flex justify-center md:justify-start">
+                    <a href="https://twitter.com" target="_blank"><i class="bi bi-twitter"></i></a>
+                    <a href="https://facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
+                    <a href="https://linkedin.com" target="_blank"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://instagram.com" target="_blank"><i class="bi bi-instagram"></i></a>
+                    <a href="https://youtube.com" target="_blank"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-8 border-t border-gray-700 pt-4">
+            <p class="text-sm">© 2025 BankingPro System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom Scripts -->
+    <script>
+        // Search Bar Toggle
+        function toggleSearchBar() {
+            const searchBar = document.querySelector('.search-bar');
+            searchBar.classList.toggle('active');
+            if (searchBar.classList.contains('active')) {
+                searchBar.focus();
+            }
+        }
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::main}, ${customer.id == null ? 'New Customer' : 'Edit Customer'})}">
+
+<body>
+    <main>
+        <h2 th:text="${customer.id == null} ? 'Create New Customer' : 'Edit Customer'"></h2>
+        <hr />
+        <form th:action="@{/customers/save}" th:object="${customer}" method="post" class="w-50">
+            <input type="hidden" th:field="*{id}" />
+            <div class="mb-3">
+                <label class="form-label">First Name</label>
+                <input type="text" th:field="*{firstName}" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Last Name</label>
+                <input type="text" th:field="*{lastName}" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" th:field="*{email}" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Social Security Number</label>
+                <input type="text" th:field="*{socialSecurityNumber}" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="homeBranch" class="form-label">Home Branch</label>
+                <select th:field="*{homeBranch}" class="form-select" id="homeBranch">
+                    <option value="">Select a Home Branch</option>
+                    <option th:each="branch : ${branches}" th:value="${branch.id}" th:text="${branch.name}"></option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Save Customer</button>
+            <a th:href="@{/customers}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </main>
+</body>
+
+</html>
