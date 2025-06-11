@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::main}, 'Customer Details')}">
+
+<body>
+    <main>
+        <!-- Customer Info Card -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3><i class="bi bi-person-circle"></i> <span
+                        th:text="${customer.firstName + ' ' + customer.lastName}"></span></h3>
+                <a th:href="@{/customers}" class="btn btn-link">← Back to Customer List</a>
+            </div>
+            <div class="card-body">
+                <p><strong>Email:</strong> <span th:text="${customer.email}"></span></p>
+                <p><strong>SSN:</strong> <span th:text="${customer.socialSecurityNumber}"></span></p>
+                <p><strong>Home Branch:</strong> <span th:text="${customer.homeBranch?.name ?: 'N/A'}"></span></p>
+            </div>
+        </div>
+
+        <!-- Accounts Section -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4><i class="bi bi-journal-album"></i> Bank Accounts</h4>
+                <a th:href="@{/accounts/form/{customerId}(customerId=${customer.id})}" class="btn btn-success">Open New
+                    Account</a>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Account #</th>
+                            <th>Type</th>
+                            <th>Balance</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="account : ${accounts}">
+                            <td th:text="${account.accountNumber}"></td>
+                            <td th:text="${account.accountType}"></td>
+                            <td th:text="${#numbers.formatCurrency(account.balance)}"></td>
+                            <td><span class="badge bg-success" th:text="${account.status}"></span></td>
+                            <td><a th:href="@{/accounts/details/{id}(id=${account.id})}"
+                                    class="btn btn-sm btn-info">Manage</a></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(accounts)}">
+                            <td colspan="5" class="text-center">This customer has no bank accounts.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Loans Section -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4><i class="bi bi-cash-coin"></i> Loans</h4>
+                <a th:href="@{/loans/form/{customerId}(customerId=${customer.id})}" class="btn btn-warning">Apply for
+                    New Loan</a>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Loan Type</th>
+                            <th>Principal</th>
+                            <th>Outstanding Balance</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="loan : ${loans}">
+                            <td th:text="${loan.loanType}"></td>
+                            <td th:text="${#numbers.formatCurrency(loan.principalAmount)}"></td>
+                            <td th:text="${#numbers.formatCurrency(loan.outstandingBalance)}"></td>
+                            <td><span class="badge bg-info" th:text="${loan.status}"></span></td>
+                            <td><a th:href="@{/loans/details/{id}(id=${loan.id})}"
+                                    class="btn btn-sm btn-info">Manage</a></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(loans)}">
+                            <td colspan="5" class="text-center">This customer has no loans.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

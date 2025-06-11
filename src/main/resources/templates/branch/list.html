@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout(~{::main}, 'Branches')}">
+
+<body>
+    <main>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="bi bi-diagram-3"></i> Branches</h2>
+            <a th:href="@{/branches/form}" class="btn btn-primary">Add New Branch</a>
+        </div>
+        <table class="table table-hover table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Transit Number</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="branch : ${branches}">
+                    <td th:text="${branch.id}"></td>
+                    <td th:text="${branch.name}"></td>
+                    <td th:text="${branch.address}"></td>
+                    <td th:text="${branch.transitNumber}"></td>
+                    <td>
+                        <a th:href="@{/branches/edit/{id}(id=${branch.id})}" class="btn btn-sm btn-info">Edit</a>
+                        <a th:href="@{/branches/delete/{id}(id=${branch.id})}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::main}, ${employee.id == null ? 'New Employee' : 'Edit Employee'})}">
+
+<body>
+    <main>
+        <h2 th:text="${employee.id == null} ? 'Create New Employee' : 'Edit Employee'"></h2>
+        <hr />
+        <form th:action="@{/employees/save}" th:object="${employee}" method="post" class="w-50">
+            <input type="hidden" th:field="*{id}" />
+            <div class="mb-3">
+                <label for="firstName" class="form-label">First Name</label>
+                <input type="text" th:field="*{firstName}" class="form-control" id="firstName" required>
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input type="text" th:field="*{lastName}" class="form-control" id="lastName" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" th:field="*{email}" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="employeeId" class="form-label">Employee ID</label>
+                <input type="text" th:field="*{employeeId}" class="form-control" id="employeeId" required>
+            </div>
+            <div class="mb-3">
+                <label for="position" class="form-label">Position</label>
+                <input type="text" th:field="*{position}" class="form-control" id="position"
+                    placeholder="e.g., Teller, Loan Officer" required>
+            </div>
+            <div class="mb-3">
+                <label for="branch" class="form-label">Branch</label>
+                <select th:field="*{branch}" class="form-select" id="branch">
+                    <option value="">Select a Branch</option>
+                    <option th:each="branchItem : ${branches}" th:value="${branchItem.id}" th:text="${branchItem.name}">
+                    </option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Save Employee</button>
+            <a th:href="@{/employees}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </main>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::main}, ${branch.id == null ? 'New Branch' : 'Edit Branch'})}">
+
+<body>
+    <main>
+        <h2 th:text="${branch.id == null} ? 'Create a New Branch' : 'Edit Branch'"></h2>
+        <hr />
+        <form th:action="@{/branches/save}" th:object="${branch}" method="post" class="w-50">
+            <input type="hidden" th:field="*{id}" />
+            <div class="mb-3">
+                <label for="name" class="form-label">Branch Name</label>
+                <input type="text" th:field="*{name}" class="form-control" id="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <input type="text" th:field="*{address}" class="form-control" id="address" required>
+            </div>
+            <div class="mb-3">
+                <label for="transitNumber" class="form-label">Transit Number</label>
+                <input type="text" th:field="*{transitNumber}" class="form-control" id="transitNumber" required>
+            </div>
+            <button type="submit" class="btn btn-success">Save Branch</button>
+            <a th:href="@{/branches}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </main>
+</body>
+
+</html>

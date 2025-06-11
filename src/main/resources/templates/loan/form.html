@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    th:replace="~{fragments/layout :: layout(~{::main}, 'New Loan Application')}">
+
+<body>
+    <main>
+        <h2>New Loan Application for <span th:text="${customer.firstName + ' ' + customer.lastName}"></span></h2>
+        <hr />
+        <form th:action="@{/loans/save/{customerId}(customerId=${customer.id})}" th:object="${loan}" method="post"
+            class="w-50">
+            <div class="mb-3">
+                <label for="loanType" class="form-label">Loan Type</label>
+                <select th:field="*{loanType}" class="form-select" id="loanType" required>
+                    <option th:each="type : ${loanTypes}" th:value="${type}" th:text="${type}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="principalAmount" class="form-label">Principal Amount</label>
+                <input type="number" th:field="*{principalAmount}" step="0.01" class="form-control" id="principalAmount"
+                    required>
+            </div>
+            <div class="mb-3">
+                <label for="interestRate" class="form-label">Interest Rate (%)</label>
+                <input type="number" th:field="*{interestRate}" step="0.01" class="form-control" id="interestRate"
+                    required>
+            </div>
+            <div class="mb-3">
+                <label for="approvingEmployee" class="form-label">Approving Employee (Loan Officer)</label>
+                <select th:field="*{approvingEmployee}" class="form-select" id="approvingEmployee" required>
+                    <option value="">Select an Employee</option>
+                    <option th:each="emp : ${employees}" th:value="${emp.id}"
+                        th:text="${emp.firstName + ' ' + emp.lastName + ' - ' + emp.position}"></option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Submit Application</button>
+            <a th:href="@{/customers/details/{id}(id=${customer.id})}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </main>
+</body>
+
+</html>
